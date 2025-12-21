@@ -560,35 +560,76 @@ flowchart LR
 
 
 
-
 ---
 transition: slide-left
 level: 2
+class: text-sm
 ---
-### `Issue #2`: Model Architecture,  Calibration Images, Quantization
 
+### Issue #2: Compiler Configurations, Calibration Images and Quantization
 
+<div style="padding-top:20px;">
+  <span style="color:orange; font-weight:bold;">CLI tool</span> & Python SDK
+</div>
 
+<div style="margin-top: 15px; margin-left: 20px;">
+  <strong>System Requirements:</strong>
+  <div style="margin-top: 5px; margin-left: 15px;"><span>- Ubuntu 22.04+</span></div>
+  <div style="margin-top: 5px; margin-left: 15px;"><span>- 16+ GB RAM</span></div>
+  <div style="margin-top: 5px; margin-left: 15px;"><span v-mark.red="1">- Nvidia GPU (optional, but recommended)</span></div>
+</div>
 
+<div style="margin-top: 15px; margin-left: 20px;">
+  <strong>Setup for Demonstration:</strong>
+  <div style="margin-top: 5px; margin-left: 15px;"><span>- 2 × AWS c5a.4xlarge instances (no GPU)</span></div>
+  <div style="margin-top: 5px; margin-left: 15px;"><span>- Compilation takes <strong>5+ hours</strong> <span  v-mark.red="2"> : MAPPING ERROR. </span></span></div>
+</div>
+
+<div style="margin-top: 20px; margin-left: 20px;">
+  <span>Calibration Images for Generalization?</span>
+</div>
+
+<div style="margin-top: 20px; margin-left: 20px;">
+  <span>Evaluation for Quantized Model?</span>
+</div>
 ---
 transition: slide-left
 level: 1
 ---
-# Plans: Solutions for Issues
+# Plans & Solutions for Issues
+
+
+
+
 
 ---
 transition: slide-left
 level: 2
 hideInToc: true
 ---
-### For `Issue #1`
+### `Issue #1 Train-Valid Split, Data Leakage & Domain Shift Concerns`
+
+
+| <div style="margin-top:30px;">Train</div> | <div style="margin-top:30px;">Validation</div> | <div style="margin-top:30px;">Total</div> |
+| ----| ----| ---|
+| 47400 | 13641| 61041 |
+
+
+<div style="margin-top: 60px; margin-left: 10px;">
+  Possible Strategy : 
+  <div style="padding-left:40px;">
+    <span style="color:pink; font-weight:bold;">Red Hat</span> &
+    <span style="color:#66ccff; font-weight:bold;">Blue Hat</span>
+  </div>
+</div>
+
 
 ---
 transition: slide-left
 level: 2
 hideInToc: true
 ---
-### For `Issue #2`
+### `Issue #2: Compiler Configurations, Calibration Images and Quantization`
 
 ---
 transition: slide-left
