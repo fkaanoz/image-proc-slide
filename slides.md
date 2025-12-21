@@ -1,12 +1,11 @@
 ---
 theme: seriph
 background: https://www.outdoorhaber.com/wp-content/uploads/2014/05/agri-dagi-2.jpg
-title: The Image Processing Subsystem 
-  
+title: The Image Processing Subsystem
+
 class: text-center
 
 transition: slide-left
-
 mdc: true
 duration: 1000min
 hideInToc: true
@@ -102,6 +101,46 @@ level: 1
 ---
 # Dataset Preperation, Training Process
 
+```mermaid {theme: 'dark', scale: 0.48}
+
+flowchart LR
+ subgraph Iteration_1["Iteration 1"]
+        D1["Raw Dataset v1"]
+        H1["Hyperparameters v1"]
+        T1["Training"]
+        B1["best.pt v1"]
+  end
+ subgraph Iteration_2["Iteration 2"]
+        D2["Dataset v2<br>+ New Data"]
+        H2["Hyperparameters v2"]
+        T2["Training"]
+        B2["best.pt v2"]
+  end
+ subgraph Iteration_3["Iteration 3"]
+        D3["Dataset v3<br>+ Manipulations"]
+        H3["Hyperparameters v3"]
+        T3["Training"]
+        B3["best.pt v3"]
+  end
+    D1 --> T1
+    H1 --> T1
+    T1 --> B1
+    D2 --> T2
+    H2 --> T2
+    T2 --> B2
+    D3 --> T3
+    H3 --> T3
+    T3 --> B3
+    B1 -. Initialize weights .-> T2
+    B2 -. Initialize weights .-> T3
+
+```
+<div class="flex justify-end">
+  <div class="text-right text-sm">
+    <div>Kaggle</div>
+    <div>Each iteration was 20 Epochs ~ 12 Hours</div>
+  </div>
+</div>
 
 ---
 transition: slide-left
@@ -123,7 +162,7 @@ level: 2
 | DUT Anti-UAV Detection | 5,182 | Drone | Small & Middle | ~5,200 | Direct Upload | 1600 × 1600  |
 | VISIODECT | 4,646 | Drone | Small & Middle | ~12,000 | Uniform Sampling | 1600 × 1600  |
 | UAVFly | 3,999 | Drone | Middle | ~22,000 | Uniform Sampling | 1600 × 1600  |
-| MAV-Dataset | 4,990 | Drone | Middle | ~30,000 | Uniform Sampling | 1600 × 1600  |
+| <span v-mark.red="1">MAV-Dataset</span> | 4,990 | Drone | Middle | ~30,000 | Uniform Sampling | 1600 × 1600  |
 | <span v-mark.red="1">Wosdetc</span> | 7,000 | Drone | Small | ~50.000 | Uniform Sampling | 1920 × 1080 |
 | <span v-mark.red="1">LRDDv1</span> | 2,500 | Drone | Small & Middle | ~17,000 | Uniform Sampling | 1920 × 1080 |
 | <span v-mark.yellow="2">Synthetic Dataset </span>| 2,000 | Drone | Middle & Large | ~Inf | N/A | 1600 × 1600  |
@@ -159,11 +198,19 @@ level: 2
   </div>
 
   <div style="padding-left:14px; font-size:12px">
-    <span>2) Two of the dataset as valid</span>
+    <span>2) Two of the Dataset as Validation</span>
+  </div>
+
+  <div style="padding-left:14px; font-size:12px; color:yellow;">
+    <span>3) Bounding Box's Width-Height Based</span>
   </div>
 
   <div style="padding-left:14px; font-size:12px">
-    <span>3) Bounding Box's Width-Height Based</span>
+    <span>4) pHash for Images + Hamming Distance (Threshold [10-20])</span>
+  </div>
+
+  <div style="padding-left:14px; font-size:12px">
+    <span>5) Embeddings from CLIP + Cosine Distance </span>
   </div>
 </div>
 
@@ -202,7 +249,7 @@ level: 2
     src="./images/graphs/recall.png"
     class="absolute rounded "
   />
-  
+
   <img
     v-click="2"
     src="./images/graphs/map.png"
@@ -245,7 +292,7 @@ model.train(
 ```
 
 ```py {18}
-# Freezing some backbone layers, 
+# Freezing some backbone layers,
  model.train(
     data=f"{WORK_DIR}/data.yaml",
     imgsz=1600,
@@ -267,7 +314,7 @@ model.train(
 ```
 
 ```py {18}
-# Freezing more backbone layers, 
+# Freezing more backbone layers,
  model.train(
     data=f"{WORK_DIR}/data.yaml",
     imgsz=1600,
@@ -289,7 +336,7 @@ model.train(
 ```
 
 ```py {18}
-# Freezing more backbone layers, 
+# Freezing more backbone layers,
  model.train(
     data=f"{WORK_DIR}/data.yaml",
     imgsz=1600,
@@ -317,9 +364,42 @@ model.train(
 
 ---
 transition: slide-left
+layout: two-cols-header
 level: 2
+class: text-sm
 ---
+::left::
 ### Background Image Additions : Hard Negative Mining
+
+<div style="font-size: 1.3em; margin-top: 1em;">
+  <strong>Outcomes:</strong>  
+  <ul style="margin-top:10px;margin-left: 1.5em; line-height: 1.6; font-size:13px;">
+    <li>Higher Precision – Fewer false positives</li>
+    <li>Higher Recall – Fewer false negatives ❗</li>
+    <li>Increased Confidence – More reliable predictions ❗</li>
+  </ul>
+</div>
+
+<div style="margin-top:10px;">Increased margin between drones and other things.</div>
+
+::right::
+<div style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; padding-left:40px;">
+```mermaid {theme: 'dark', scale: 0.50}
+flowchart TB
+    A["Initial Drone Detection Model"] --> B["Extract Frames from YouTube Videos"]
+    B --> C["First Hard Negative Mining"]
+    C --> n1_1["#1 Background Images into Dataset "]@{shape: hexagon}
+    n1_1 --> D["Retrain Model with Background Images #1"]
+    D --> E["Second Hard Negative Mining"]
+    E --> n1_2["#2 Background Images into Dataset "]@{shape: hexagon}
+    n1_2 --> F["Final Background Image Set"]
+     
+    style n1_1 fill:#FFA500,stroke:#333,stroke-width:1px,color:white
+    style n1_2 fill:#FFA500,stroke:#333,stroke-width:1px,color:white
+```
+
+</div>
+
 
 ---
 transition: slide-left
@@ -329,9 +409,10 @@ level: 2
 <div style="padding-top:20px; font-size:12px">Doing inference through train and valid sets. Threshold Confidence Score: 0.4</div>
 <div style="padding-top:10px; font-size:12px">2500+ Problems</div>
 <div style="padding-top:5px; font-size:12px; padding-left:20px"> • 1200 -> loosy bounding boxes or mislabeled </div>
-<div style="padding-top:5px; font-size:12px; padding-left:20px"> • 700  -> less than 20x20 or GoPro</div>
+<div style="padding-top:5px; font-size:12px; padding-left:20px"> • 700  -> less than 20x20 or GoPro (Less than 12x12 were eliminated </div>
 <div style="padding-top:5px; font-size:12px; padding-left:20px"> • 600  -> model's mistakes</div>
 
+<div style="padding-top:20px; font-size:12px">SAM3 for label fixes.</div>
 
 ---
 transition: slide-left
@@ -356,6 +437,19 @@ level: 2
 
 
 
+---
+transition: slide-left
+level: 2
+---
+### Eventual Dataset
+
+| | <div style="margin-top:30px;">Train</div> | <div style="margin-top:20px;">Validation</div> |
+| ----| ----| ---|
+| Drone | 43739 | 12642|
+| Background | 3661| 999|
+| Total | 47400| 13641 |
+
+
 
 ---
 transition: slide-left
@@ -363,9 +457,54 @@ level: 1
 ---
 # Generalization (?)
 
+|Manipulation   | Train | Valid | TOTAL |
+| ----| --- | ---|  ---|
+| <kbd>Hard Negative Backgrounds </kbd>  | ~3200 | ~800 | ~4000 |
+| <kbd>Synthetic Images</kbd> | 2000 | 0 |  2000 |
+| <kbd>Label Fixes & Noise Reduction </kbd>| 	&#x2705; | &#x2705; | N/A |
+| <kbd>Recorded Video</kbd> | 1800 |  0  |  1800 |
+| <kbd>LRDDv1, Wosdect</kbd>| 2500 | 0 |  2500|
+| <kbd>MAV-Dataset</kbd>| 0 | 4990 |  4990|
 
 
+---
+transition: slide-left
+level: 1
+hideInToc: true
 
+---
+# Generalization (?)
+<div class="relative">
+  <img
+    src="./images/graphs/box_losses.png"
+    class="absolute rounded"
+  />
+ </div>
+
+---
+transition: slide-left
+level: 1
+hideInToc: true
+
+---
+# Generalization (?)
+
+
+<div class="relative">
+   <img
+    src="./images/graphs/class_losses.png"
+    class="absolute rounded img-overlay"
+  />
+</div>
+
+
+<style>
+.img-overlay {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  padding-bottom:30px;
+}
+
+</style>
 
 ---
 transition: slide-left
@@ -375,7 +514,8 @@ image: https://magazinmehatronika.com/wp-content/uploads/2024/08/RPiAiHailoGPIO-
 ---
 # Into the Accelerator
 
-image and details of hailo
+Hailo AI HAT+
+- 13 TOPS
 
 ---
 transition: slide-left
@@ -383,6 +523,44 @@ level: 2
 ---
 
 ### .pt to .hef Conversion
+
+
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding-bottom:50px;">
+
+```mermaid {theme: 'dark', scale: 0.6}
+flowchart LR
+  subgraph Hailo["Hailo Compiler"]
+        B["Optimization Stage"]
+        C["Hailo Archive: HAR"]
+        M["Mapping Stage"]
+  end
+
+  A0["PT Model | FLOAT32"] --> A["ONNX Model"]
+  A --> B
+  B --> C
+  C --> M
+  M --> D["HEF | INT8 & INT4"]
+
+  E["Calibration Images"] -.-> B
+  F["Configurations (.alls)"] -.-> B
+
+  style B fill:#FFA500,stroke:#000,stroke-width:1px,color:white
+  style M fill:#FFA500,stroke:#000,stroke-width:1px,color:white
+
+```
+
+<div style="position: absolute; bottom: 1rem; width: 100%; text-align: center; font-size: 0.8rem; padding-bottom:10px;">
+  <a href="https://hailo.ai/developer-zone/documentation/dataflow-compiler-v3-33-0/?sp_referrer=_images/model_build_overview_with_onnx_and_hef_w_har.svg#id2" target="_blank">
+    [1] Simplified Version of Graph for Hailo's Build Process
+  </a>
+</div>
+
+
+</div>
+
+
+
+
 ---
 transition: slide-left
 level: 2
@@ -418,7 +596,6 @@ level: 2
 hideInToc: true
 ---
 ### Tracking
-
 
 
 ---
