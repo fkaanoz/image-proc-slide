@@ -2,7 +2,7 @@
 theme: seriph
 background: https://www.outdoorhaber.com/wp-content/uploads/2014/05/agri-dagi-2.jpg
 title: The Image Processing Subsystem
-
+colorSchema: dark
 class: text-center
 
 transition: slide-left
