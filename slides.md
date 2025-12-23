@@ -214,6 +214,34 @@ level: 2
   </div>
 </div>
 
+<div v-click="1" style="display: flex; align-items: flex-start; width: 60vw; gap: 0.5rem; padding-left:30px; padding-top:50px;">
+
+  <!-- Left label -->
+  <div style="display:flex; align-items:flex-start; height:20px;">
+    <span style="font-size:0.7rem; white-space: nowrap;">Domain Shift</span>
+  </div>
+
+  <!-- Straight line with gray-white-gray gradient -->
+  <svg width="100%" height="20" viewBox="0 0 200 20" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="red" />
+        <stop offset="30%" stop-color="yellow" />
+        <stop offset="50%" stop-color="white" />
+        <stop offset="70%" stop-color="yellow" />
+        <stop offset="100%" stop-color="red" />
+      </linearGradient>
+    </defs>
+    <rect x="0" y="8" width="200" height="4" fill="url(#lineGradient)" />
+  </svg>
+
+  <!-- Right label -->
+  <div style="display:flex; align-items:flex-start; height:20px;">
+    <span style="font-size:0.7rem; white-space: nowrap;">Data Leakage</span>
+  </div>
+
+</div>
+
 
 ---
 transition: slide-left
@@ -236,7 +264,6 @@ transition: slide-left
 level: 2
 ---
 ### On-The-Fly Changes to the Dataset & Graphs
-
 
 <div class="relative">
   <img
@@ -359,6 +386,67 @@ model.train(
 
 
 ````
+
+::right::
+
+<div class="flex h-full items-center justify-center">
+  <div class="px-8 py-6">
+    <h3 class="text-md mb-4 text-center">
+      Evaluation Metrics
+    </h3>
+    <ul class="text-sm" style="margin-left:20px;">
+      <li>Precision</li>
+      <li>Recall</li>
+      <li>mAP@50</li>
+      <li>mAP@50–95</li>
+    </ul>
+  </div>
+</div>
+
+---
+transition: slide-left
+level: 2
+hideInToc: true
+---
+
+### False Positive Issue
+
+<div style="font-size: 1.3em; margin-top: 1em;">
+  <ul style="margin-top:10px;margin-left: 1.5em; line-height: 1.6; font-size:13px;">
+    <li>Geometries on Trees</li>
+    <li>Street Lamps</li>
+    <li>Pi-shaped Objects (e.g., parts of buildings)</li>
+    <li>Upper Parts of Cars</li>
+  </ul>
+</div>
+
+
+<img
+  v-click="1"
+  src="./images/false_positive_video.png"
+  alt=""
+  style="
+    display: block;
+    margin: 0 auto;
+    max-height: 45vh;
+    width: auto;
+    object-fit: contain;
+  "
+/>
+
+<div
+  v-click="1"
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+    font-size: 0.7em;
+    font-weight:800;
+  "
+>
+  ~40 videos, Walking Speed
+</div>
 
 
 
@@ -550,7 +638,7 @@ flowchart LR
 ```
 
 <div style="position: absolute; bottom: 1rem; width: 100%; text-align: center; font-size: 0.8rem; padding-bottom:10px;">
-  <a href="https://hailo.ai/developer-zone/documentation/dataflow-compiler-v3-33-0/?sp_referrer=_images/model_build_overview_with_onnx_and_hef_w_har.svg#id2" target="_blank">
+  <a href="https://hailo.ai/docs/26594-hailo_dataflow_compiler_v5.0.0_sphinx/doc//_images/model_build_overview_with_onnx_and_hef_w_har.svg" target="_blank">
     [1] Simplified Version of Graph for Hailo's Build Process
   </a>
 </div>
@@ -615,14 +703,46 @@ hideInToc: true
 | 47400 | 13641| 61041 |
 
 
-<div style="margin-top: 60px; margin-left: 10px;">
-  Possible Strategy : 
-  <div style="padding-left:40px;">
-    <span style="color:pink; font-weight:bold;">Red Hat</span> &
-    <span style="color:#66ccff; font-weight:bold;">Blue Hat</span>
-  </div>
+<div grid="~ cols-2 gap-6" m="t-8">
+
+<!-- LEFT COLUMN -->
+<div>
+
+<div style="padding-top:20px;"> 1) 
+  <span style="color:pink; font-weight:bold;">Red Hat</span> &
+  <span style="color:#66ccff; font-weight:bold;">Blue Hat</span>
+  ?
 </div>
 
+<div style="margin-top:40px;" v-click="1"> 2)
+  On-the-fly Augmentation
+  <span style="color:pink; font-weight:bold;">vs</span>
+  Pre-augmentation
+</div>
+
+</div>
+
+<!-- RIGHT COLUMN -->
+<div v-click="1" style="padding-top:px;">
+
+```python
+model.train(
+    ...
+    hsv_h=0.015,
+    hsv_s=0.7,
+    hsv_v=0.4,
+    degrees=5.0,
+    translate=0.1,
+    scale=0.5,
+    flipud=0.0,
+    fliplr=0.5,
+    mosaic=1.0,   # !!
+    mixup=0.2,
+    copy_paste=0.1,
+)
+```
+</div>
+</div>
 
 ---
 transition: slide-left
